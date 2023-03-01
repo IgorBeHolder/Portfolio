@@ -1,0 +1,1111 @@
+---
+title: "Coursera Capstone project"
+author: "Igor Sorochan"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+  chunk_output_type: inline
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  github_document:
+    toc: yes
+    toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: 4
+    df_print: paged
+    code_folding: hide
+always_allow_html: yes
+---
+
+|                                                                                                                                                                |     |                                                                                                                                         |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|-----------------------------------------------------------------------------------------------------------------------------------------|
+| <img src="https://companieslogo.com/img/orig/COUR_BIG-e3284ace.png" width="100"/>                                                                              |     | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png" width="100"/> |
+| Coursera is the global online learning platform that offers anyone, anywhere access to online courses and degrees from world-class universities and companies. |     | Google is a multinational corporation specializing in internet-related services and products.                                           |
+
+# Case Study: How Does a Bike-Share navigate speedy Success?
+
+## 1. ASK
+
+### Scenario
+
+I'm a junior data analyst working in the marketing analyst team at Cyclistic, a bike-share company in Chicago.\
+
+Lily Moreno, the director of marketing, believes the company's future success depends on maximizing the number of annual memberships. Therefore, my team wants to understand\
+\
+**How casual riders and annual members use Cyclistic bikes differently?**\
+
+### Settings
+
+**About the company**
+
+Cyclistic is bike share system across Chicago and Evanston. Cyclistic provides residents and visitors with a convenient, fun and affordable transportation option for getting around and exploring Chicago.
+
+Cyclistic, like other bike share systems, consists of a fleet of specially-designed, sturdy and durable bikes that are locked into a network of docking stations throughout the region. The bikes can be unlocked from one station and returned to any other station in the system. People use bike share to explore Chicago, commute to work or school, run errands, get to appointments or social engagements, and more.
+
+Cyclistic is available for use 24 hours/day, 7 days/week, 365 days/year, and riders have access to all bikes and stations across the system.
+
+Until now, Cyclistic's marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members.
+
+Cyclistic's finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, Moreno believes that **maximizing the number of annual members** will be **key to future growth**. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance **to convert casual riders into members**. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs. Moreno has set a clear goal: **Design marketing strategies aimed at converting casual riders into annual members**. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends.
+
+### Project stakeholders
+
+**Primary stakeholders:**
+
+-   Cyclistic executive team
+
+-   Lily Moreno, the director of marketing
+
+**Secondary stakeholders:**
+
+-   Cyclistic marketing analytics team
+
+From these insights, my team will design a new marketing strategy to convert casual riders into annual members.
+
+My team has to produce a report with the following deliverables:
+
+1\. #A clear statement of the business task
+
+2\. #A description of all data sources used
+
+3\. #Documentation of any cleaning or manipulation of data
+
+4\. **A summary of your analysis**
+
+5\. #Supporting visualizations and key findings
+
+6\. **Your top three recommendations based on your analysis**
+
+### Questions my team has to answer:
+
+1.  How casual riders and annual members use Cyclistic bikes differently?
+
+2.  Why would casual riders buy Cyclistic annual memberships?
+
+3.  How can Cyclistic use digital media to influence casual riders to become members?
+
+## 2. PREPARE
+
+### Data location
+
+Lyft Bikes and Scooters, LLC ("Bikeshare") operates the City of Chicago's ("City") Divvy bicycle sharing service. Bikeshare and the City are committed to supporting bicycling as an alternative transportation option. As part of that commitment, the City permits Bikeshare to make certain Divvy system data owned by the City ("Data") available to the publicData organization.\
+
+The data has been made available by Motivate International Inc. under [this license.](https://www.divvybikes.com/data-license-agreement) It is a **First-party data.**
+
+We'll use that Data in Case study as Cyclistic's historical trip data.
+
+Data is reliable, original, comprehensive, current and cited.\
+
+### Data credibility and data bias
+
+The Data itself is a First-party data and it is credible and has no evidence of bias of any kind.
+
+### Data ethics
+
+There is no any personal information that we can associate with real customers.\
+
+Each trip is anonymized.
+
+We accept all limitations on Data usage noted in "Prohibited conduct" in [**Data License Agreement**.](https://www.divvybikes.com/data-license-agreement)
+
+### Data tools
+
+At first glance, the overall dataset would be **Large** enough to process (mlns of rows) and will force any available spreadsheet software to struggle, so our team decided to use R to handle it.\
+
+Let's do that.
+
+Setting the environment.
+
+```{r Setting the environment, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(lubridate)
+library(ggplot2)
+library(plotly)
+library(scales)
+library(skimr)
+library(DT)
+library(crosstable)
+library(flextable)
+library(sf)
+options(dplyr.summarise.inform = FALSE)
+options(max.print=100)
+```
+
+Take a mention on the current working folder in output of `getwd()` and if redefine it if needed:
+
+```{r current working folder }
+getwd()
+# uncomment and redefine it if needed (use your actual folder)
+# setwd("../Coursera/Case_study/")
+```
+
+Original data lives [here](https://divvy-tripdata.s3.amazonaws.com/index.html).\
+
+We've selected appropriate .zip files from 01-Jan-2022 till 30-Jan2023 (13 months of data were available as of the date of this report) and store them locally at `zip_dir` folder.
+
+Defining the directory where all original zip files are placed and defining `report_caption` :
+
+```{r zip folder}
+zip_dir<- paste0(getwd(),"/Divvy_tripdata/") 
+report_caption <- "Jan 2022 - Jan 2023"
+```
+
+Defining the directory csv files to extract:
+
+```{r csv folder}
+csv_Dir<- paste0(getwd(),"/Divvy_tripdata/csv/") 
+```
+
+Unzipping all files and put them to `csv_dir`:
+
+```{r unzipping files}
+files <- list.files(path = zip_dir, pattern = "*.zip")
+for (i in files) {
+  unzip(paste0(zip_dir,i), exdir=csv_Dir)
+}
+```
+
+Reading csv files and nesting them into Large list (almost 2Gb).\
+
+Wait a little bit, please. Need a minute to execute:
+
+```{r Large list }
+temp <- list.files(path = csv_Dir, pattern = "*.csv")
+myfiles <- lapply(paste0(csv_Dir,temp), read.csv)
+```
+
+Thus, all the data we need is collected in one place.\
+
+We haven't performed any data manipulations so far.\
+
+Let's go further.
+
+## 3. PROCESS
+
+### Data transformations
+
+#### Do the data frames have the same columns and types?
+
+Let's check it out:
+
+```{r cols consistency}
+janitor::compare_df_cols_same(myfiles)
+```
+
+TRUE - means that all columns in all data frames have appropriate names and types of data.
+
+#### Finally forming united table.
+
+Binding data frames by row, making a longer result (few seconds to execute, don't panic):
+
+```{r binding to raw_df}
+raw_df <- dplyr::bind_rows(myfiles)
+```
+
+Let's look in:
+
+```{r head}
+head(raw_df,5)
+```
+
+#### We need to convert date related columns to appropriate type:
+
+```{r casting dates}
+raw_df$started_at = ymd_hms(raw_df$started_at) 
+raw_df$ended_at = ymd_hms(raw_df$ended_at) 
+```
+
+#### Adding a calculated columns
+
+It is obvious that we'll need a duration information in our analysis.
+
+Let's add a calculated column `trip_duration` that counts trip duration in **minutes**.
+
+```{r adding trip duration (in minutes)}
+raw_df[,"trip_duration"] <- as.numeric(as.duration(raw_df$ended_at - raw_df$started_at), "minutes")
+```
+
+### Data integrity
+
+Tables naming
+
++----------------------------+-----------------------------+------------------+
+| Tables used in the project | Table purpose               | Table dimensions |
++============================+=============================+==================+
+| raw_df                     | untouched imported data     | 5,858,018 x 13   |
++----------------------------+-----------------------------+------------------+
+| trip_df                    | store filtered valid data,\ | 5,548,446 x 15   |
+|                            | add calculated columns      |                  |
++----------------------------+-----------------------------+------------------+
+| stations_df                | station dictionary          | 1,716 x 6        |
++----------------------------+-----------------------------+------------------+
+| stations_df2               | temporary table             |                  |
++----------------------------+-----------------------------+------------------+
+| df                         | tibble, cleaned data        | 5,548,446 x 16   |
++----------------------------+-----------------------------+------------------+
+
+1.  **Domain integrity:** Domain integrity ensures that each value in a column falls within the permissible range of the domain of that column. Moreover, the conditions for default and null values must also be met.
+
+2.  **Entity integrity:** Entity integrity ensures that each row of the database has a non-null unique primary key.
+
+3.  **Referential integrity:** Referential integrity ensures a valid relationship between two tables by checking the relationship between the foreign key and primary key in those tables.
+
+Let's evaluate values domain for integrity:
+
+```{r glimpse at raw_df }
+skim_without_charts(raw_df)
+```
+
+Data set consists of 5.858.018 observations with 14 characteristics (columns).
+
+Time scope of all trips is relevant to the scope of business problem.
+
+Quantitative (numeric and POSIXct) data:
+
+| Attribute     | min value             | max value             | number of NA | Domain integrity | Entity integrity | Notes                          |
+|---------------|-----------------------|-----------------------|--------------|------------------|------------------|--------------------------------|
+| started_at    | `2022-01-01 00:00:05` | `2023-01-31 23:56:09` | 0            | \+               | \+               |                                |
+| ended_at      | `2022-01-01 00:01:48` | `2023-02-04 04:27:03` | 0            | \+               | \+               |                                |
+| trip_duration | 10353.35              | 41387.25              | 0            | fault            | \+               | negatives, very high `std dev` |
+| start_lat     | 41.64                 | 45.63503              | 0            | fault            | \+               | too big range for a city       |
+| start_lng     | -87.8                 | -73.796               | 0            | fault            | \+               | too big range for a city       |
+| end_lat       | 0.00                  | 42.37000              | 5985         | fault            | fault            | zeros                          |
+| end_lng       | -88.1                 | 0.00000               | 5985         | fault            | fault            | zeros                          |
+
+: Qualitative(character)data:
+
+| Attribute          | Number of empty entries | Number of unique | Domain integrity | **Entity integrity** | Notes                                          |
+|--------------------|-------------------------|------------------|------------------|----------------------|------------------------------------------------|
+| ride_id            | 0                       | 5858018          | \+               | \+                   | \+                                             |
+| rideable_type      | 0                       | 3                | \+               | \+                   | \+                                             |
+| start_station_name | 859785                  | 1682             | \+               | fault                | number of stations is greater than station IDs |
+| start_station_id   | 859785                  | 1314             | \+               | \+                   | \+                                             |
+| end_station_name   | 920582                  | 1700             | \+               | fault                | number of stations is greater than station IDs |
+| end_station_id     | 920582                  | 1319             | \+               | \+                   | \+                                             |
+| member_casual      | 0                       | 2                | \+               | \+                   | \+                                             |
+
+How many observations are affected with empty start and finish points?
+
+```{r Rows with missing data}
+raw_df %>% 
+  filter(start_station_name == "" | end_station_name == ""  ) %>% 
+  nrow()
+```
+
+A lot of data affected. We might manage to restore some observations stations names by geo data if it possible. This will potentially lead us to more comprehensive reports with geo data.\
+
+### Data issues
+
+Most of the lost of stations names fell on electric bikes:
+
+```{r Missing stations name}
+raw_df %>% 
+  filter(start_station_name == "" |
+           end_station_name == "" ) %>%
+  group_by(rideable_type) %>% 
+  summarise(sum= n()) %>%
+  ggplot(aes(rideable_type, y= sum )) +
+  geom_col(aes(fill= rideable_type), show.legend = FALSE) +
+  scale_y_continuous(labels = label_comma()) +
+  geom_label(aes(y = sum, x = rideable_type, label = sum,
+               color = rideable_type), hjust =0.8, vjust = 0, show.legend = FALSE)+
+  labs(title = "Trips with missing station's names by type of bike",
+       caption = report_caption,
+       x ="", y= "",
+       fill='Type of rider')+
+  theme(axis.text.y=element_blank(),
+        axis.text = element_text(size = 16) ) 
+```
+
+The reason could be a complete discharge of the batteries.
+
+100 observations have negative trip duration.
+
+```{r Negative trip durations}
+raw_df %>%
+  filter(trip_duration < 0) %>%
+  group_by(rideable_type) %>%
+  summarise(sum= n()) %>% 
+  as_flextable()
+
+```
+
+#### The data is not clean
+
+1.  **Domain integrity issue.** Standard deviation of `trip_duration` is unreasonably high: ( 175 min, while mean =19 min). This clearly indicates the presence of extreme outliers.
+
+    Some `started_at` is greater than `ended_at`. It means negative `trip_duration` .
+
+2.  **Entity integrity issue.** 5985 trips (0.1% of all trips) have no gps data at all. This concern we might take into account if we'll plan to investigate routes. Some observations at end stations include zeros.
+
+    1.340.374 (23 % of all trips) of data concerning station's names is empty. 99,5 % among them are electric bikes.
+
+3.  **Referential integrity issue.** Station's naming is not consistent.
+
+    The number of station identifiers is less than their names.\
+
+**Solutions:**
+
+1.  Exclude data with negative `trip_duration` (100 observations)
+
+2.  Exclude data with too big `trip_duration` (greater than 1499 minutes, \~25 hours) and with simultaneously empty `end_station_name`
+
+3.  Exclude classic bike's trips with missing station's names (3863 observations)
+
+4.  Restore stations ID by geo data where possible. Maybe this won't screw the overall patterns but it's better to restore the missing data.
+
+#### Dropping irrelevant data
+
+The data has to be processed.\
+
+Let's take a look on distribution of "strange" observations\
+where `trip_duration > 1499 & rideable_type != "docked_bike"`
+
+```{r Dirty data distribution, message=FALSE, warning=FALSE}
+raw_df %>% 
+
+  filter(rideable_type != "docked_bike") %>%
+  filter(trip_duration > 0) %>% 
+
+  
+  ggplot() +
+  geom_density(aes(x=trip_duration)) +
+  scale_y_log10() +
+  geom_segment(aes(x = 1.35e3, y = 1e-2, xend = 1.49e3, yend = 3e-4),color = "red",
+                 lineend = "round", linejoin = "mitre",
+                  arrow = arrow(length = unit(0.5, "cm")))
+```
+
+The surge at mark 25h(1500 minutes) **might be a service notation**, e.g. bikes that had been left out of parking stations, fully discharged, defected or stolen bikes.
+
+Finally, we will **consider a trip valid** if it satisfies the following conditions:
+
+1.  `rideable_type != "docked_bike"` to exclude service observations.
+
+2.  `trip_duration` \> 1 minute (exclude any trips that were below 60 seconds in length (potentially false starts or users trying to re-dock a bike to ensure it was secure).
+
+3.  `trip_duration` \< 1499 minutes(25 hours). ([NOTE: If you do not return a bike within a 24-hour period, you may be charged a lost or stolen bike fee of \$250 (plus tax](https://help.divvybikes.com/hc/en-us/articles/360033484791-What-if-I-keep-a-bike-out-too-long-)).
+
+4.  `end_station_name` is not empty
+
+```{r dirty data rows}
+raw_df %>% 
+  filter(rideable_type == "docked_bike" | is.na(end_lat) |
+           trip_duration < 1 | trip_duration > 1499 ) %>% 
+  nrow()
+```
+
+This assumption will exclude 308,332 (5.2 %) observations from "dirty" data. This is acceptable.
+
+We keep the source untouched and put valid data to `trip_df` :
+
+```{r trip_df}
+trip_df <- raw_df %>% 
+  filter(rideable_type != "docked_bike" & !is.na(end_lat)) %>% 
+  filter(trip_duration > 1 &
+           trip_duration < 1499 ) 
+```
+
+### Restoring missed station names
+
+The logic:\
+1. Build a data frame (`stations_df`) with all station's names and appropriate geo data\
+2. Restore station's names according to the dictionary geo data.
+
+Let's try.
+
+#### Station's names
+
+To avoid duplicates we round the geo data to 4 decimals places (11 m accuracy).
+
+```{r stations_df}
+# setting geo data accuracy (decimal places)
+geo_acc <- 4
+
+# parcing end stations
+stations_df <- trip_df %>% 
+    filter(end_station_name != "" & 
+             (end_lat != 0 | !is.na(end_lat) ) ) %>% 
+  group_by(end_station_name) %>% 
+
+  # we use means here to increase geo data accuracy of stations
+  summarise(latit = mean(end_lat), 
+            lngit = mean(end_lng)) %>% 
+  unique()
+
+# all columns with postfix '2' at the end will serve later as joining instances 
+stations_df[,"end_lat2"] = round(stations_df$latit,geo_acc)
+stations_df[,"end_lng2"] = round(stations_df$lngit,geo_acc)
+
+# adding station IDs
+stations_df <-
+  left_join(stations_df, trip_df, by = c("end_station_name"), multiple = "first") %>% 
+  select("end_station_id",
+         "end_station_name",
+         "latit",
+         "lngit",
+         "end_lat2",
+         "end_lng2")
+# renaming
+stations_df <- 
+  rename(stations_df, all_of( c(station_name = "end_station_name", 
+                                station_id =  "end_station_id")) )
+
+
+# parcing start stations
+# stations_df2 - start_station data frame
+stations_df2 <- trip_df %>% 
+    filter(start_station_name != "" ) %>% 
+  group_by(start_station_name) %>% 
+  # all columns with '2' at the end will serve later as joining instances 
+  # we use means here to increase geo data accuracy
+  summarise(latit = mean(start_lat), 
+            lngit = mean(start_lng) ) %>% 
+  unique()
+
+# all columns with postfix '2' at the end will serve later as joining instances 
+stations_df2[,"end_lat2"] = round(stations_df2$latit,geo_acc)
+stations_df2[,"end_lng2"] = round(stations_df2$lngit,geo_acc)
+
+
+# adding station IDs
+stations_df2 <-
+  left_join(stations_df2, trip_df, by = c("start_station_name"), multiple = "first") %>% 
+  select("start_station_id",
+         "start_station_name",
+         "latit",
+         "lngit",         
+         "end_lat2",
+         "end_lng2")
+# renaming
+stations_df2 <- 
+  rename(stations_df2, all_of( c(station_name = "start_station_name", 
+                                station_id =  "start_station_id")) )
+
+stations_df <-
+  bind_rows(stations_df, stations_df2) %>% 
+  dplyr::distinct(station_name, .keep_all = TRUE) 
+
+```
+
+#### Restoring stations names
+
+##### Restoring `end_station_name` and `end_station_id`.
+
+```{r End stations}
+# service columns with rounded geo data
+trip_df[,"end_lat2"] <- round(trip_df$end_lat,geo_acc)
+trip_df[,"end_lng2"] <- round(trip_df$end_lng,geo_acc)
+trip_df[,"restored"] <- NA
+
+trip_df <- 
+  left_join(trip_df, stations_df, by = c("end_lat2","end_lng2"), multiple = 'first') 
+
+# logging restoration
+trip_df$restored = 
+  ifelse(trip_df$end_station_name == "" & !is.na(trip_df$station_name),
+         "end_station_name",
+         ifelse(trip_df$end_station_id == "" & !is.na(trip_df$station_id),
+                "end_station_id", NA)
+  )
+# adding end_station_name
+trip_df$end_station_name = 
+  ifelse(trip_df$end_station_name == ""& !is.na(trip_df$station_name),
+         trip_df$station_name,
+         trip_df$end_station_name) 
+# adding end_station_id
+trip_df$end_station_id = 
+  ifelse(trip_df$end_station_id == ""& !is.na(trip_df$station_id),
+         trip_df$station_id,
+         trip_df$end_station_id) 
+
+# dropping service joining columns
+trip_df <- within(trip_df, rm("end_lat2",
+                                        "end_lng2",
+                                        "station_id",
+                                        "station_name" ))
+```
+
+##### Restoring `start_station_name` and `start_station_id`.
+
+```{r Start stations}
+trip_df[,"start_lat2"] <- round(trip_df$start_lat,geo_acc)
+trip_df[,"start_lng2"] <- round(trip_df$start_lng,geo_acc)
+
+stations_df <- 
+  rename(stations_df, all_of( c(start_lat2 = "end_lat2", 
+                                start_lng2 =  "end_lng2")) )
+
+trip_df <- 
+  left_join(trip_df, stations_df, by = c("start_lat2","start_lng2"), multiple = 'first') 
+# logging restoration
+trip_df$restored = 
+  ifelse(trip_df$start_station_name == "" & !is.na(trip_df$station_name),
+         "start_station_name",
+         ifelse(trip_df$start_station_id == "" & !is.na(trip_df$station_id),
+                "start_station_id", NA)
+  )
+
+# adding start_station_name
+trip_df$start_station_name = 
+  ifelse(trip_df$start_station_name == "" & !is.na(trip_df$station_name),
+         trip_df$station_name,
+         trip_df$start_station_name) 
+# adding start_station_id
+trip_df$start_station_id = 
+  ifelse(trip_df$start_station_id == "" & !is.na(trip_df$station_id),
+         trip_df$station_id,
+         trip_df$start_station_id) 
+
+# dropping joining columns
+trip_df <- within(trip_df, rm(
+                                  "start_lat2",
+                                  "start_lng2",
+                                  "station_id",
+                                  "station_name",
+                                  "latit.x",
+                                  "lngit.x",
+                                  "latit.y",
+                                  "lngit.y"))
+nrow(filter(trip_df, !is.na(restored) ) )
+```
+
+We've managed to restore station's names within 312,438 (291,850) observations.\
+
+Converting cleaned data frame to tibble:
+
+```{r Converting cleaned data frame to tibble}
+df <- as_tibble(trip_df) 
+```
+
+Adding a trip the day of the week :
+
+```{r Adding the day of the week }
+df[, "weekday"] <- wday(df$started_at, label = TRUE)
+```
+
+## 4. ANALYSE
+
+#### Assumptions and constraints
+
+Let's take a look at distribution of trips over data set:
+
+```{r distribution of trips over data set, warning=FALSE}
+df %>% 
+  ggplot(aes(x=trip_duration, y= member_casual)) +
+  geom_boxplot( outlier.colour = "red",
+                outlier.stroke = 0, 
+                outlier.alpha = 0.1,
+                varwidth = FALSE) +
+  scale_x_log10()
+```
+
+There are too many outliers that might skew overall statistics.\
+
+We constrain data with :
+
+-   the upper limit to `mean + 5sigma` = 142 minutes
+
+```{r Upper trip limit}
+(trip_limit <- mean(df$trip_duration) + 5* sd(df$trip_duration) )
+```
+
+It removes only 17.837 rows (0.3 % of all trips). So our conclusions will be based on 99.7 % of "clean" data.
+
+```{r count dropped rows}
+count(filter(df, trip_duration > trip_limit))
+```
+
+```{r cropped df}
+filter(df, trip_duration < trip_limit) -> df
+```
+
+### Descriptive statistics. Trip durations
+
+#### Average duration of one trip throughout a year
+
+```{r Average duration of one trip, warning=TRUE}
+df %>% 
+  group_by(member_casual, weekday) %>% 
+  summarise(ride_mean = round(mean(trip_duration),1))  %>% 
+  # summarise(ride_mean = round(mean(trip_duration),1))  %>%   
+  ggplot() +
+  geom_col(aes(y = ride_mean, x = weekday, fill = member_casual ),
+           position = "dodge") + #, show.legend = FALSE, , alpha = 0.8
+  labs(title = "Average duration of one trip by day of the week",
+       caption = report_caption,
+       x ="", y= "minutes",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) +
+geom_label(aes(y = ride_mean, x = weekday, label = ride_mean,
+               color = member_casual), hjust =0.8, vjust = 1.5, show.legend = FALSE)
+
+```
+
+```{r the average ride_length for members and casual riders}
+df %>% 
+  group_by(member_casual) %>% 
+  summarise(ride_mean = round(mean(trip_duration),1) ) %>% 
+  as_flextable()  %>% 
+set_caption(paste("Trip average duration.", report_caption)) %>% delete_part("header")
+
+# df %>% 
+#   crosstable(c(" "= trip_duration), by=c(rider=member_casual), funs=c("Average duration"= mean),  showNA="no", percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+#   as_flextable(compact=TRUE, keep_id=FALSE)  %>% 
+#   set_caption(paste("Trip average duration.", report_caption))  #%>% delete_part("header")
+```
+
+Insights:
+
+-   Average duration of **casual riders is significantly higher** (+ 51 %)
+
+-   Trips on **Wednesdays** are 17 % shorter than on weekends among all customers.
+
+#### The maximum ride duration
+
+Finding the maximum ride duration we assume:
+
+1.  Bike is not docked
+
+2.  Start and end stations are defined
+
+3.  We'll look up through the source data
+
+```{r The maximum ride duration}
+raw_df  %>% 
+  filter(rideable_type != "docked_bike") %>%
+  filter(start_station_name !="" & end_station_name != "") %>% 
+  # group_by(rideable_type) %>% 
+  # summarise(max=as.duration(max(ended_at - started_at))) %>% 
+  crosstable(c(" "= trip_duration), by=c(bycicle = rideable_type), funs=c("Max trip in minutes"= max),  showNA="no", percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+  as_flextable(compact=TRUE, keep_id=FALSE)  %>% 
+  set_caption(paste("The maximum ride duration.", report_caption))
+```
+
+```{r maximum ride duration}
+raw_df  %>% 
+  filter(rideable_type != "docked_bike") %>%
+  filter(start_station_name !="" & end_station_name != "" &
+           !is.na(end_lat)) %>% 
+  group_by(rideable_type) %>% 
+  summarise(max=as.duration(max(ended_at - started_at))) %>%
+
+  ggplot() + 
+  geom_col(aes(y = max, x = rideable_type, fill = rideable_type ),
+           show.legend = FALSE) +
+  geom_label(aes(y = max, x = rideable_type, 
+                 label = format(max,big.mark=",") )
+             , vjust = 2) + 
+  labs(title = "The maximum ride duration", 
+       caption = report_caption,
+       x ="", y= "") +  
+  scale_y_continuous(labels = label_comma()) +
+  theme(axis.text.y=element_blank(),
+        axis.text = element_text(size = 16)
+        ) 
+```
+
+```{r long rides on e-bikes, message=FALSE}
+raw_df %>% 
+  filter(rideable_type == "electric_bike") %>%
+  filter(start_station_name !="" & end_station_name != "" &
+           !is.na(end_lat)) %>% 
+  select("rideable_type", "member_casual", "trip_duration") %>% 
+  arrange(desc(trip_duration)) %>% 
+  head(30)
+```
+
+Insights:
+
+-   Classic bike still leads the way in 1 full day trips
+
+-   The electric bike was able to last for 8 hours)
+
+-   The absolute majority of long rides on e-bikes were taken by members. (Pricing starts at \$1 to unlock plus \$0.39/minute for casual riders (\$0 to unlock plus **\$0.16/minute for members)**.)
+
+#### Number of trips throughout a year
+
+```{r Number of trips throughout a year}
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year  
+  group_by(member_casual, rideable_type) %>% 
+  summarise(ride_count = n()) %>%
+  
+  ggplot() + 
+  geom_col(aes(x = member_casual, y = ride_count,  fill = rideable_type ),
+           show.legend = TRUE) + 
+  geom_label(aes(x = member_casual, y = ride_count,  
+                 label = format(ride_count,big.mark=",") , color = rideable_type),
+             position = position_stack(vjust = 0.6) , show.legend = FALSE) + 
+  labs(title = "Number of trips per year", 
+       caption = "2022 calendar year data",
+       x ="", y= "") +  
+  scale_y_continuous(labels = label_comma()) +
+  theme(axis.text = element_text(size = 16) ) 
+
+```
+
+```{r count trips bike type, warning=FALSE}
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year 
+  crosstable(c(" "=rideable_type), by=member_casual, total="both", showNA="no", 
+        percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+  as_flextable(compact=TRUE, keep_id=FALSE) %>% 
+  set_caption(paste("Number of trips. 2022 calendar year"))
+```
+
+```{r count trips months, warning=FALSE}
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year 
+  mutate(Month=  month(started_at, label = TRUE)) %>% 
+  crosstable(c(" "= Month), by=member_casual, total="both", showNA="no", 
+        percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+  as_flextable(compact=TRUE, keep_id=FALSE) %>% 
+  set_caption(paste("Number of trips. 2022 calendar year"))
+
+```
+
++-------------------------------------------------------------------------------------------+
+| Number of trips                                                                           |
++===========================================================================================+
+| -   **Casual** riders **prefer e-bikes**                                                  |
++-------------------------------------------------------------------------------------------+
+| -   while Cyclistic's **members** choose e-bikes and classic bikes roughly equally        |
++-------------------------------------------------------------------------------------------+
+| -   **Members** use Cyclistics's services **much more often** than casual riders (+50 %). |
++-------------------------------------------------------------------------------------------+
+
+#### The mode of day of week throughout a year
+
+```{r overall mode of day of week}
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks") 
+df %>% 
+  group_by(member_casual, weekday) %>%
+  summarise(mode = Mode(weekday), 
+            count = n() / num_weeks )  %>% 
+  # arrange(desc(count))
+  
+  ggplot() +
+  geom_col(aes(y = count, x = weekday, fill = member_casual ),
+           position = "stack") + #, show.legend = FALSE, , alpha = 0.8
+  labs(title = "Number of trips by day of the week",
+       caption = report_caption,
+       x ="", y= "Stacked count",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) +
+  geom_label(aes(x = weekday, y = count,  label = round(count), color = member_casual), 
+      hjust =0.5, vjust = 1.7, show.legend = FALSE, size = 3,
+      position = "stack") # position_dodge(width = 1)
+```
+
+```{r mode of dow by member_casual}
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks") 
+df %>% 
+  group_by(member_casual, weekday) %>%
+  summarise(mode = Mode(weekday), 
+            count = n() / num_weeks )  %>% 
+  # arrange(desc(count))
+  
+  ggplot() +
+  geom_col(aes(y = count, x = weekday, fill = member_casual ),
+           position = "dodge") + #, show.legend = FALSE, , alpha = 0.8
+  labs(title = "Number of trips by day of the week",
+       caption = report_caption,
+       x ="", y= "Number of trips",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) +
+  geom_label(aes(x = weekday, y = count,  label = round(count), color = member_casual), 
+      hjust =0.5, vjust = 1.7, show.legend = FALSE, size = 3,
+      position = position_dodge(width = 1)) 
+```
+
+```{r mode of dow by member_casual2}
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks")
+
+df %>% 
+  mutate(Month=  month(started_at, label = TRUE)) %>% 
+
+  crosstable(c("   " =Month), by=c(" "=member_casual,"  "=weekday),  total="both", showNA="no", 
+        percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+  as_flextable(compact=TRUE, keep_id=FALSE) %>% 
+  set_caption(paste("Cross table. Number of trips by Month and by day of the week", report_caption))
+```
+
+**Number of trips by day of the week. Insights:**
+
++---------------+---------------------------------------------------------------------+-----------------------------------+
+| Rider         | The mode                                                            | Anti-mode\                        |
+|               |                                                                     | (the least frequent score)        |
++===============+=====================================================================+===================================+
+| Member riders | Tue, Wed, Thu - roughly equal                                       | Sunday                            |
++---------------+---------------------------------------------------------------------+-----------------------------------+
+| Casual riders | Saturday                                                            | Monday - Tuesday                  |
++---------------+---------------------------------------------------------------------+-----------------------------------+
+| Population    | **Saturday**\                                                       | Monday\                           |
+|               | is the most busy day at Cyclistic's mainly thanks to casual riders. | is the least busy day of the week |
++---------------+---------------------------------------------------------------------+-----------------------------------+
+
+Insights:
+
+-   **Monday** is the least busy day of the week (anti-mode).
+
+-   **Saturday** is the most busy day at Cyclistic's mainly thanks to casual riders.
+
+```{r Mode of day of week}
+
+# num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks") 
+# df %>% 
+#   group_by( weekday) %>%
+#   summarise(mode = Mode(weekday), 
+#             count = n() / num_weeks ) %>% 
+#   arrange(desc(count))
+```
+
+#### Different seasons to make some initial observations
+
+```{r overall year load}
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year
+  group_by(member_casual, Month=  month(started_at, label = TRUE)) %>%
+  summarise(count = n()) %>%
+
+  ggplot(aes(x = Month, y= count, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  labs(title = "Number of trips per month",
+       caption = "2022 calendar year data",
+       x ="", y= "",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) 
+# +
+#   geom_text(aes(x = Month, y= count, label = count),
+#       hjust =0.5, vjust = 1.7, show.legend = FALSE, size = 2,
+#       position = position_dodge(width = 1))
+
+```
+
+```{r trips per month}
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year
+  group_by(member_casual, Month=  month(started_at, label = TRUE)) %>%
+  summarise(count = n()) %>%
+
+  ggplot(aes(x = Month, y= count, fill = member_casual)) +
+  geom_col(position = "stack") +
+  labs(title = "Stacked Number of trips per month",
+       caption = "2022 calendar year data",
+       x ="", y= "Stacked count",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) 
+# +
+#   geom_text(aes(x = Month, y= count, label = count),
+#       hjust =0.5, vjust = 1.7, show.legend = FALSE, size = 2,
+#       position = position_dodge(width = 1))
+```
+
+Insights:
+
+-   **Jan and Feb are the toughest month at Cyclistics**. The income is only \~ 16% of year peaks.
+
+-   **Members** generated **\~80% of income** during **Jan and Feb**.
+
+-   In the summer months, the proportion begins to level off.
+
+#### Average trip duration by day of week, month, rider
+
+```{r Monthly trip duration}
+
+# plotly interactive doesn't work with github output
+# insp_plt <-
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year
+  group_by(member_casual, Month=  month(started_at, label = TRUE)) %>%
+  summarise(aver = mean(trip_duration)) %>%
+  
+  ggplot() +
+  geom_col(aes(x = Month, y=aver, fill = member_casual),
+           position = "dodge", alpha = 1) +
+  labs(title = "Average trip duration month by month",
+       caption = report_caption,
+       x ="", y= "Minutes",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma())
+
+# ggplotly(insp_plt)
+```
+
+#### Number of trips by duration
+
+```{r Trips by duration of ride, message=FALSE, warning=FALSE}
+df %>% 
+  ggplot(aes(x = trip_duration, fill = member_casual)) +
+  geom_histogram(binwidth= 5,position = "dodge") + #
+  labs(title = "Trips by duration of ride",
+       caption = "Bin duration: 5 min",
+       x ="Minutes", y= "Count of trips",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma())+
+  xlim(0, 65)
+```
+
+Insights:
+
+-   Most trips (21%) are made in the 5 to 15 minute range.
+
+```{r mean_median}
+# df %>% 
+# summary(df$trip_duration )
+
+df %>% 
+  mutate(Month=  month(started_at, label = TRUE), 
+         Ride_duration = round(trip_duration)) %>% 
+
+  crosstable(c(" "=Ride_duration), by=c("Rider" = member_casual ), funs = c(mean, median), total="both", showNA="no", 
+        percent_digits=0, percent_pattern="{n} ({p_col})") %>% 
+  as_flextable(compact=TRUE, keep_id=FALSE) %>% 
+  set_caption(paste("Mean and median trip durations.", report_caption))
+```
+
+## 5. SHARE
+
+Guiding questions:
+
+1.  Were you able to answer the question of how annual members and casual riders use Cyclistic bikes differently?
+
+2.  What story does your data tell?
+
+3.  How do your findings relate to your original question?
+
+4.  Who is your audience? What is the best way to communicate with them?
+
+5.  Can data visualization help you share your findings?
+
+6.  Is your presentation accessible to your audience?
+
+### How casual riders and annual members use Cyclistic bikes differently?
+
+We have figured out a significant differences in behaviour among riders.\
+**Members** use Cyclistics to complete their daily activities, such as commuting to work or school, running errands.\
+Members ride more often but their trips are shorter.\
+**Casual** riders most likely use bike share to explore Chicago, get to appointments or social engagements, and more. And casual riders prefer e-bikes.
+
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+|                                   | members                                                             | casual riders                                                              |
++===================================+=====================================================================+============================================================================+
+| number of trips\                  | \                                                                   | \                                                                          |
+| min-max per month                 | 83482 - 416457                                                      | 16997 - 363992                                                             |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| spread of trip duration per month | 10-13 min\                                                          | 12-22 min\                                                                 |
+|                                   | (Dec-Jun)                                                           | (Dec-May)                                                                  |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| year average trip duration        | 12.1                                                                | 18,4                                                                       |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| mode of day of week               | Tue, Wed, Thu                                                       | Sat                                                                        |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| anti-mode of day of week          | Sun                                                                 | Mon-Tue                                                                    |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| bike type preference              | doesn't matter                                                      | e-bike                                                                     |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| weather dependence                | medium                                                              | high                                                                       |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| seasonal patterns\                | medium\                                                             | very high\                                                                 |
+| Jan -Jul rides                    | 1:5                                                                 | 1:21                                                                       |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+| **most likely purpose of use**    | **commute to work or school, run errands, performing daily duties** | **explore Chicago, get to appointments or social engagements on weekends** |
++-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
+
+### Why would casual riders buy Cyclistic annual memberships?
+
+So, how can we steer casual riders to became a Cyclistics member?\
+We should accent our offerings on the preferences that have been figured out in the report. It means we should include special e-bikes proposal into annual membership.
+
+1.  Annual **prime membership** which includes 30-45 minutes of e-bike rides a day.\
+    The price should be higher than ordinary membership, say 175-200 \$ but\
+    Additional research should be conducted about specific pricing parameters.
+
+2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
+
+3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
+
+Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accent on classic bike usage).
+
+### How can Cyclistic use digital media to influence casual riders to become members?
+
+1.  Use social networks to populate bike sharing.
+
+2.  Use direct targeting on potential customers. Send direct proposals using mobile app every customers have already installed.
+
+3.  Collaboration with local parks and attractions to populate bike using. Invest into popular bike apps like Komoot, Strava to inform local customers about Cyclistics.
+
+## 6. ACT
+
+1.  What is your final conclusion based on your analysis?\
+    Casual riders are not avid bikers. The are ready to pay more for e-bike rent.\
+    We have to make them an offer from which they are unlikely to refuse.
+
+2.  How could your team and business apply your insights?\
+    We need to develop a marketing campaign to promote e-bikes rent among members.
+
+3.  What next steps would you or your stakeholders take based on your findings?\
+    Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments.
+
+4.  Is there additional data you could use to expand on your findings?\
+    Add Boston 2022 weather (temperature, precipitation)\
+    Add viz with geo data most pop stations\
+    Define a correlation member_casual - weather conditions.
+
+Additional work:
+
+1.  Add Boston 2022 weather (temperature, precipitation)
+
+2.  add viz with geo data most pop stations
+
+3.  correlation member_casual - weather conditions.
+
+```{r}
+# geo_df <-
+# stations_df %>% 
+  # filter(end_lng2 < -87)
+```
+
+```{r}
+
+# chi_map <- read_sf("https://raw.githubusercontent.com/thisisdaryn/data/master/geo/chicago/Comm_Areas.geojson")
+
+  # ggplot(chi_map) +
+  # geom_sf() + 
+  # geom_point(data = geo_df, mapping = aes(x = end_lng2, y = end_lat2),
+  #            size = 1, stroke = 0, color = "red") +
+  # geom_text(data = geo_df, aes(x=end_lng2, y=end_lat2, label=station_name),
+  #           size = 3,  check_overlap = TRUE, color= "blue") # hjust=0, vjust=-1,
+```
+
+```{r}
+# insp_plt <- ggplot(data = chi_map) + 
+#   geom_sf() +
+#   geom_point(data = geo_df, 
+#              aes(x = end_lng2, y = end_lat2, 
+#                  colour = "red"))  # , label=station_name
+# ggplotly(insp_plt)
+```
