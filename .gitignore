@@ -152,6 +152,7 @@ dmypy.json
 
 # RStudio files
 .Rproj.user/
+*.RData
 
 # produced vignettes
 vignettes/*.html
