@@ -3,18 +3,18 @@ title: "Coursera Capstone project"
 author: "Igor Sorochan"
 date: "`r Sys.Date()`"
 output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  chunk_output_type: inline
+  word_document:
+    toc: yes
+    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     df_print: paged
     code_folding: hide
-  chunk_output_type: inline
-  word_document:
-    toc: yes
-    toc_depth: '4'
-  github_document:
-    toc: yes
-    toc_depth: 4
   pdf_document:
     toc: yes
     toc_depth: '4'
