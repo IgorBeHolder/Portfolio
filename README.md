@@ -1,4 +1,4 @@
-| <img src="Resume/images/coursera.jpeg" width="90"/> | <img src="Resume/images/Google.jpeg" width="90"/> |
+| <img src="Resume/images/coursera.png" width="90"/> | <img src="Resume/images/Google.png" width="90"/> |
 |:---|:---|
 | Coursera is the global online learning platform that offers anyone, anywhere access to online courses and degrees from world-class universities and companies. | Google is a multinational corporation specializing in internet-related services and products. |
 
