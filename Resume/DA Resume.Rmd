@@ -27,20 +27,18 @@ knit: pagedown::chrome_print
 
 ## Skills {#skills}
 
+-   Highly skilled in **Python** (pandas, numpy, plotly, web parsing),
 
-* Highly skilled in **Python** (pandas, numpy, plotly, web parsing),
-* **SQL** (joins, windows, triggers).  
-Create comprehensive reports in R, Tableau.  
-Conduct statistical analysis, statistical learning models
-and optimization methods.
+-   **SQL** (joins, windows, triggers).\
+    Create comprehensive reports in R, **Tableau**.
 
-Years of experience as a small business owner and well understanding of business needs.
+-   Conduct **statistical analysis**, statistical learning models and optimization methods.
 
+-   Years of experience as a small business owner and well **understanding of business needs**.
 
 ## Disclaimer {#disclaimer}
 
-This resume was made with the R package **pagedown**
-<!-- [**pagedown**](https://github.com/rstudio/pagedown). -->
+This resume was made with the R package **pagedown** <!-- [**pagedown**](https://github.com/rstudio/pagedown). -->
 
 Last updated on `r Sys.Date()`.
 
@@ -82,7 +80,6 @@ Moscow, Russia
 -   Pioneering a fluorescent digital printing
 -   Original on-site technologies
 -   Skills: negotiations, PostgreSQL
-
 :::
 
 ### Graphic Designer
@@ -131,42 +128,41 @@ Netology, online
 
 ### Moscow State University of Economics, Statistics and Informatics (MESI)
 
-Bachelor's degree,
-Banking and Financial Support Services
+Bachelor's degree, Banking and Financial Support Services
 
 Moscow, Russia
 
 1991 - 1995
 
 ## Accomplishments {data-icon="laptop"}
+
 <!-- Licenses & certifications -->
+
 ### Google Data Analytics Professional Certificate
 
 Google
 
 Coursera, online
 
-
-
 2023
 
 -   Capstone project
 -   6 month, 8 courses program
--   Among 0.7% of best  (24 out of 3091 students) "Churn rate prediction" Catboost ML modeling
-
-
+-   Among 0.7% of best (24 out of 3091 students) "Churn rate prediction" Catboost ML modeling
 
 ## Hobbies {data-icon="bicycle"}
 
 ### Amateur cyclist and photographer
 
-And yes, I love cycling, especially MTB.  
+And yes, I love cycling, especially MTB.\
 Head and legs should work equally well)
 
 Single tracks
 
 All year round
 
+::: left-side
+:::
 
-<div class="left-side"></div>
-<div class="right-side"></div>
+::: right-side
+:::
