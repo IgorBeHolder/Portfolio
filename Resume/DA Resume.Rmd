@@ -34,7 +34,7 @@ knit: pagedown::chrome_print
 
 -   Conduct **statistical analysis**, statistical learning models and optimization methods.
 
--   Years of experience as a small business owner and well **understanding of business needs**.
+-   Years of experience as a business owner and well **understanding of business needs**.
 
 ## Disclaimer {#disclaimer}
 
