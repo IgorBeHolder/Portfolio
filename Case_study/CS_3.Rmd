@@ -3,21 +3,22 @@ title: "Coursera Capstone project"
 author: "Igor Sorochan"
 date: "`r Sys.Date()`"
 output:
-  github_document:
+  pdf_document: 
     toc: yes
     toc_depth: 4
+    fig_width: 7
+    fig_height: 5
   chunk_output_type: inline
   word_document:
     toc: yes
     toc_depth: '4'
-  html_document:
+  html_document: 
     toc: yes
     toc_depth: 4
-    df_print: paged
     code_folding: hide
-  pdf_document:
+  github_document:
     toc: yes
-    toc_depth: '4'
+    toc_depth: 4
 always_allow_html: yes
 ---
 
@@ -1067,15 +1068,13 @@ Our top recommendations:
 
 1.  Work out a new e-bike membership which includes 30-60 minutes of **e-bike rides on weekends**.\
     The price should be higher than ordinary membership, say 200 \$ but\
-    Additional research should be conducted about specific pricing parameters.
+    Additional research should be conducted about specific pricing parameters\*
 2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
 3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
 
 Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accent on classic bike usage).
 
-### Why would casual riders buy Cyclistic annual memberships?
-
-Annual weekend membership program - any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included for 200\$ a year. \
+\*Annual weekend membership program - any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included for 200\$ a year. \
 April - September - 48 days means only 4\$ on e-bike a day.
 
 ### How can Cyclistic use digital media to influence casual riders to become members?
