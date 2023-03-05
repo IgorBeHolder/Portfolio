@@ -1096,11 +1096,61 @@ Let's don't forget about our current customers. New proposal shouldn't contradic
 
 Additional work:
 
-1.  Add Boston 2022 weather (temperature, precipitation)
+1.  Add Chicago 2022 weather (temperature, precipitation)
 
 2.  add viz with geo data most pop stations
 
 3.  correlation member_casual - weather conditions.
+
+```{r}
+w_df <- read.csv("Divvy_tripdata/Beach_Weather_Stations_-_Automated_Sensors.csv")
+skim_without_charts(w_df)
+```
+
+```{r casting w_df dates}
+# casting date
+w_df$weather_date = mdy_hms(w_df$Measurement.Timestamp)
+# trans temp Air Temperature in Celsius degrees.
+# w_df$TempC <- 5/9*(w_df$Air.Temperature - 32)
+```
+
+```{r}
+w_df %>% 
+  filter(weather_date >= "2022-01-01" & weather_date <= "2023-01-30") %>% 
+  select("weather_date","Air.Temperature", "Total.Rain") %>% 
+  # filter(hour(weather_date) == 11) %>% 
+  group_by( Month = month(weather_date, label = TRUE)) %>% 
+  summarise( aver_temp = mean(Air.Temperature), 
+             aver_rain = mean(Total.Rain, na.rm = TRUE)) -> w2_df
+```
+
+```{r}
+
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year
+  group_by(member_casual, Month=  month(started_at, label = TRUE)) %>%
+  summarise(ride_count = n()) -> temp_df
+
+left_join(temp_df, w2_df, by = c("Month"), multiple = "first") -> w2_df 
+  
+w2_df %>% 
+  # filter(member_casual == "casual") %>%
+  ggplot(label = aver_temp) +
+  geom_col(aes(x = Month, y= c(ride_count), fill = member_casual),
+           position = "dodge", alpha = 1) +
+  labs(title = "Number of trips and average air temperature month by month",
+       caption = "2022 calendar year data",
+       x ="", y= "",
+       fill='Type of rider') +
+  scale_y_continuous(labels = label_comma()) +
+  geom_point(aes(x= Month, y = aver_temp *1.4e4 ), color= "#555555" ) +
+  geom_line(aes(x= Month, y = aver_temp *1.4e4 , group= member_casual), color= "#555555" ) +
+  geom_text(aes(x= Month, y = aver_temp *1.4e4,label = round(aver_temp)), hjust=1.5, vjust=-1, color= "#444444") +
+  # add temperature line  
+  # remove y axis scale
+    theme(axis.text.y=element_blank() ) 
+  
+```
 
 ```{r}
 # geo_df <-
