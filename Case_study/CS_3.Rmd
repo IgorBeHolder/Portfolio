@@ -67,20 +67,6 @@ Cyclistic's finance analysts have concluded that annual members are much more pr
 
 From these insights, my team will design a new marketing strategy to convert casual riders into annual members.
 
-My team has to produce a report with the following deliverables:
-
-1\. #A clear statement of the business task
-
-2\. #A description of all data sources used
-
-3\. #Documentation of any cleaning or manipulation of data
-
-4\. **A summary of your analysis**
-
-5\. #Supporting visualizations and key findings
-
-6\. **Your top three recommendations based on your analysis**
-
 ### Questions my team has to answer:
 
 1.  How casual riders and annual members use Cyclistic bikes differently?
@@ -594,7 +580,7 @@ trip_df <- within(trip_df, rm(
 nrow(filter(trip_df, !is.na(restored) ) )
 ```
 
-We've managed to restore station's names within 312,438 (291,850) observations.\
+We've managed to restore station's names within 312,438 observations.\
 
 Converting cleaned data frame to tibble:
 
@@ -681,9 +667,11 @@ set_caption(paste("Trip average duration.", report_caption)) %>% delete_part("he
 
 Insights:
 
--   Average duration of **casual riders is significantly higher** (+ 51 %)
-
--   Trips on **Wednesdays** are 17 % shorter than on weekends among all customers.
++------------------------------------------------------------------------------------+
+| -   Average duration of **casual riders is significantly higher** (+ 51 %)         |
++------------------------------------------------------------------------------------+
+| -   Trips on **Wednesdays** are 17 % shorter than on weekends among all customers. |
++------------------------------------------------------------------------------------+
 
 #### The maximum ride duration
 
@@ -741,11 +729,13 @@ raw_df %>%
 
 Insights:
 
--   Classic bike still leads the way in 1 full day trips
-
--   The electric bike was able to last for 8 hours)
-
--   The absolute majority of long rides on e-bikes were taken by members. (Pricing starts at \$1 to unlock plus \$0.39/minute for casual riders (\$0 to unlock plus **\$0.16/minute for members)**.)
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -   Classic bike still leads the way in 1 full day trips                                                                                                                                             |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -   The electric bike was able to last for 8 hours)                                                                                                                                                  |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -   The absolute majority of long rides on e-bikes were taken by members. (Pricing starts at \$1 to unlock plus \$0.39/minute for casual riders (\$0 to unlock plus **\$0.16/minute for members)**.) |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 #### Number of trips throughout a year
 
@@ -884,23 +874,25 @@ df %>%
 |               | is the most busy day at Cyclistic's mainly thanks to casual riders. | is the least busy day of the week |
 +---------------+---------------------------------------------------------------------+-----------------------------------+
 
-Insights:
+**Insights:**
 
--   **Monday** is the least busy day of the week (anti-mode).
++--------------------------------------------------------------------------------------+
+| -   **Monday** is the least busy day of the week (anti-mode).                        |
++--------------------------------------------------------------------------------------+
+| -   **Saturday** is the most busy day at Cyclistic's mainly thanks to casual riders. |
++--------------------------------------------------------------------------------------+
 
--   **Saturday** is the most busy day at Cyclistic's mainly thanks to casual riders.
+```{r Table mode of day of week, eval=FALSE, include=FALSE}
 
-```{r Mode of day of week}
-
-# num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks") 
-# df %>% 
+# num_weeks <- as.numeric(max(df$ended_at) - min(df$ended_at),"weeks")
+# df %>%
 #   group_by( weekday) %>%
-#   summarise(mode = Mode(weekday), 
-#             count = n() / num_weeks ) %>% 
+#   summarise(mode = Mode(weekday),
+#             count = n() / num_weeks ) %>%
 #   arrange(desc(count))
 ```
 
-#### Different seasons to make some initial observations
+#### Rider behavior depending on the season
 
 ```{r overall year load}
 df %>% 
@@ -941,13 +933,15 @@ df %>%
 #       position = position_dodge(width = 1))
 ```
 
-Insights:
+**Insights:**
 
--   **Jan and Feb are the toughest month at Cyclistics**. The income is only \~ 16% of year peaks.
-
--   **Members** generated **\~80% of income** during **Jan and Feb**.
-
--   In the summer months, the proportion begins to level off.
++----------------------------------------------------------------------------------------------------+
+| -   **Jan and Feb are the toughest month at Cyclistics**. The income is only \~ 16% of year peaks. |
++----------------------------------------------------------------------------------------------------+
+| -   **Members** generated **\~80% of income** during **Jan and Feb**.                              |
++----------------------------------------------------------------------------------------------------+
+| -   In the summer months, the proportion begins to level off.                                      |
++----------------------------------------------------------------------------------------------------+
 
 #### Average trip duration by day of week, month, rider
 
@@ -972,6 +966,13 @@ df %>%
 # ggplotly(insp_plt)
 ```
 
+Insights:
+
+|                                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------------------------------|
+| The variation of trip duration among **members** is much lower. This means that they follow some **patterns** throughout the year. |
+| However average trip duration is higher among **casual** riders. They are **not time constrained** as members.                     |
+
 #### Number of trips by duration
 
 ```{r Trips by duration of ride, message=FALSE, warning=FALSE}
@@ -988,7 +989,11 @@ df %>%
 
 Insights:
 
--   Most trips (21%) are made in the 5 to 15 minute range.
++------------------------------------------------------------+
+| -   Most trips (21%) are made in the 5 to 15 minute range. |
++------------------------------------------------------------+
+| -   Members ride more often, but less time.                |
++------------------------------------------------------------+
 
 ```{r mean_median}
 # df %>% 
@@ -1023,51 +1028,55 @@ Guiding questions:
 ### How casual riders and annual members use Cyclistic bikes differently?
 
 We have figured out a significant differences in behaviour among riders.\
-**Members** use Cyclistics to complete their daily activities, such as commuting to work or school, running errands.\
-Members ride more often but their trips are shorter.\
-**Casual** riders most likely use bike share to explore Chicago, get to appointments or social engagements, and more. And casual riders prefer e-bikes.
 
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-|                                   | members                                                             | casual riders                                                              |
-+===================================+=====================================================================+============================================================================+
-| number of trips\                  | \                                                                   | \                                                                          |
-| min-max per month                 | 83482 - 416457                                                      | 16997 - 363992                                                             |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| spread of trip duration per month | 10-13 min\                                                          | 12-22 min\                                                                 |
-|                                   | (Dec-Jun)                                                           | (Dec-May)                                                                  |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| year average trip duration        | 12.1                                                                | 18,4                                                                       |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| mode of day of week               | Tue, Wed, Thu                                                       | Sat                                                                        |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| anti-mode of day of week          | Sun                                                                 | Mon-Tue                                                                    |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| bike type preference              | doesn't matter                                                      | e-bike                                                                     |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| weather dependence                | medium                                                              | high                                                                       |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| seasonal patterns\                | medium\                                                             | very high\                                                                 |
-| Jan -Jul rides                    | 1:5                                                                 | 1:21                                                                       |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
-| **most likely purpose of use**    | **commute to work or school, run errands, performing daily duties** | **explore Chicago, get to appointments or social engagements on weekends** |
-+-----------------------------------+---------------------------------------------------------------------+----------------------------------------------------------------------------+
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+|                                   | members                                                                             | casual riders                                                              |
++===================================+=====================================================================================+============================================================================+
+| number of trips\                  | \                                                                                   | \                                                                          |
+| min-max per month                 | 83482 - 416457                                                                      | 16997 - 363992                                                             |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| spread of trip duration per month | 10-13 min\                                                                          | 12-22 min\                                                                 |
+|                                   | (Dec-Jun)                                                                           | (Dec-May)                                                                  |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| year average trip duration        | 12.1                                                                                | 18,4                                                                       |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| mode of day of week               | Tue, Wed, Thu                                                                       | Sat                                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| anti-mode of day of week          | Sun                                                                                 | Mon-Tue                                                                    |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| bike type preference              | doesn't matter                                                                      | e-bike                                                                     |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| weather dependence                | medium                                                                              | high                                                                       |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| seasonal patterns\                | medium\                                                                             | very high\                                                                 |
+| Jan -Jul rides                    | 1:5                                                                                 | 1:21                                                                       |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| **most likely purpose of use**    | **Commute to work or school, run errands, performing daily duties during workdays** | **Explore Chicago, get to appointments or social engagements on weekends** |
++-----------------------------------+-------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+
+**Members** use Cyclistics to complete their daily activities, such as commuting to work or school, running errands.\
+Members ride more often but their trips are shorter. They are more time constrained.\
+**Casual** riders most likely use bike share to explore Chicago, get to appointments or social engagements, and more. And casual riders prefer e-bikes.
 
 ### Why would casual riders buy Cyclistic annual memberships?
 
 So, how can we steer casual riders to became a Cyclistics member?\
-We should accent our offerings on the preferences that have been figured out in the report. It means we should include special e-bikes proposal into annual membership.
+We should accent our offerings on the preferences that have been figured out in the report.
 
-1.  Annual **prime membership** which includes 30-45 minutes of e-bike rides a day.\
+Our top recommendations:
+
+1.  Work out a new e-bike membership which includes 30-60 minutes of **e-bike rides on weekends**.\
     The price should be higher than ordinary membership, say 200 \$ but\
     Additional research should be conducted about specific pricing parameters.
-
-2.  Annual weekend membership program - any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included for 150\$ a year. (April - September - 48 days means only 3\$ on e-bike a day).
-
-3.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
-
-4.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
+2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
+3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
 
 Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accent on classic bike usage).
+
+### Why would casual riders buy Cyclistic annual memberships?
+
+Annual weekend membership program - any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included for 200\$ a year. \
+April - September - 48 days means only 4\$ on e-bike a day.
 
 ### How can Cyclistic use digital media to influence casual riders to become members?
 
@@ -1079,60 +1088,63 @@ Let's don't forget about our current customers. New proposal shouldn't contradic
 
 ## 6. ACT
 
-1.  What is your final conclusion based on your analysis?\
-    Casual riders are not avid bikers. The are ready to pay more for e-bike rent.\
+1.  Casual riders are not avid bikers. The are ready to pay more for e-bike rent.\
     We have to make them an offer from which they are unlikely to refuse.
 
-2.  How could your team and business apply your insights?\
-    We need to develop a marketing campaign to promote e-bikes rent among members.
+2.  We at Cyclistics need to develop a marketing campaign to promote e-bikes rent among members.
 
-3.  What next steps would you or your stakeholders take based on your findings?\
-    Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments.
+3.  Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments. Conduct a survey about potential locations of dock-stations.
 
-4.  Is there additional data you could use to expand on your findings?\
-    Add Boston 2022 weather (temperature, precipitation)\
-    Add viz with geo data most pop stations\
-    Define a correlation member_casual - weather conditions.
+4.  Explore Chicago 2022 weather (temperature, precipitation) data and how it affected riders trips.\
 
-Additional work:
+## Additional research
 
-1.  Add Chicago 2022 weather (temperature, precipitation)
+### How does weather affect riders?
 
-2.  add viz with geo data most pop stations
+To answer this question we use [weather data set](https://data.cityofchicago.org/Parks-Recreation/Beach-Weather-Stations-Automated-Sensors/k7hf-8y75). It's a first party data.
 
-3.  correlation member_casual - weather conditions.
-
-```{r}
+```{r adding Chicago wether dataset}
 w_df <- read.csv("Divvy_tripdata/Beach_Weather_Stations_-_Automated_Sensors.csv")
-skim_without_charts(w_df)
-```
-
-```{r casting w_df dates}
 # casting date
 w_df$weather_date = mdy_hms(w_df$Measurement.Timestamp)
-# trans temp Air Temperature in Celsius degrees.
-# w_df$TempC <- 5/9*(w_df$Air.Temperature - 32)
 ```
 
-```{r}
+```{r filter and join weather data set}
 w_df %>% 
-  filter(weather_date >= "2022-01-01" & weather_date <= "2023-01-30") %>% 
+  filter(weather_date >= "2022-01-01" & weather_date <= "2022-12-31") %>% 
   select("weather_date","Air.Temperature", "Total.Rain") %>% 
-  # filter(hour(weather_date) == 11) %>% 
+  # filter(hour(weather_date) == 11) %>%
   group_by( Month = month(weather_date, label = TRUE)) %>% 
   summarise( aver_temp = mean(Air.Temperature), 
              aver_rain = mean(Total.Rain, na.rm = TRUE)) -> w2_df
-```
-
-```{r}
 
 df %>% 
   filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year
   group_by(member_casual, Month=  month(started_at, label = TRUE)) %>%
-  summarise(ride_count = n()) -> temp_df
+  summarise(ride_count = n()) %>%  
+  left_join(w2_df, by = c("Month"), multiple = "first") -> w2_df
+```
 
-left_join(temp_df, w2_df, by = c("Month"), multiple = "first") -> w2_df 
-  
+```{r Shapiro, eval=FALSE, include=FALSE}
+# shapiro.test(temp_df$ride_count)
+```
+
+```{r Pearson corr, eval=FALSE, include=FALSE}
+w2_df %>% 
+    filter( member_casual == "member") -> temp_df
+
+  res <-  cor.test(temp_df$ride_count, temp_df$aver_temp)
+res
+```
+
+```{r corr qqplot, eval=FALSE, include=FALSE}
+
+p <- ggplot(w2_df, aes(sample = ride_count, color= member_casual))
+p + stat_qq() + stat_qq_line()
+```
+
+```{r plot air.temp - riders}
+
 w2_df %>% 
   # filter(member_casual == "casual") %>%
   ggplot(label = aver_temp) +
@@ -1152,13 +1164,18 @@ w2_df %>%
   
 ```
 
-```{r}
+|                                                                     |
+|---------------------------------------------------------------------|
+| The behavior of casual riders is more dependent on air temperature. |
+| Members are more loyal customers especially in cold months.         |
+
+```{r eval=FALSE, include=FALSE}
 # geo_df <-
 # stations_df %>% 
   # filter(end_lng2 < -87)
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 # chi_map <- read_sf("https://raw.githubusercontent.com/thisisdaryn/data/master/geo/chicago/Comm_Areas.geojson")
 
@@ -1170,7 +1187,7 @@ w2_df %>%
   #           size = 3,  check_overlap = TRUE, color= "blue") # hjust=0, vjust=-1,
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # insp_plt <- ggplot(data = chi_map) + 
 #   geom_sf() +
 #   geom_point(data = geo_df, 
