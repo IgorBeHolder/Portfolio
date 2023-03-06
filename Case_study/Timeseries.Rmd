@@ -6,29 +6,17 @@ output: html_notebook
 [Forecasting: Principles and Practice](https://otexts.com/fpp3/tsibbles.html)
 
 ```{r Setting the environment, message=FALSE, warning=FALSE}
-# library(tidyverse)
-# library(dplyr)
-# library(tidyr)
-# library(janitor)
-# library(lubridate)
-# library(ggplot2)
-# library(plotly)
-# library(scales)
-# library(skimr)
-# library(DT)
-# library(crosstable)
-# library(flextable)
-# library(sf)
-# options(dplyr.summarise.inform = FALSE)
-# options(max.print=100)
 
 #These include several tidyverse packages, and packages to handle time series and forecasting in a “tidy” framework.
 library(fpp3) 
+library(readr)
 
 getwd()
 ```
 
 ```{r}
+
+# run this cell or skip and import file
 
 zip_dir<- paste0(getwd(),"/Divvy_tripdata/") 
 csv_Dir<- paste0(getwd(),"/Divvy_tripdata/csv/") 
@@ -59,20 +47,37 @@ df <- as_tibble(trip_df)
 
 df[, "weekday"] <- wday(df$started_at, label = TRUE)
 
-```
-
-```{r}
-# theme_set(theme_bw(10))
-library(ggfortify)
-
 df %>% 
   filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year  
   # filter(member_casual == "casual") %>% 
   # group_by( date = as.POSIXct(date(started_at), origin = "1970-01-01")) %>% 
   group_by( date = date(started_at ), member_casual) %>%
   summarise(ride_count = n()) -> temp_df
-  
-as.ts(temp_df) -> ts_df
+
+```
+
+### Saving the file
+
+```{r}
+
+write_csv(temp_df, 'Divvy_tripdata/temp_df.csv')
+```
+
+### Import file
+
+```{r}
+
+
+temp_df <- read_csv("Divvy_tripdata/temp_df.csv", 
+    col_types = cols(date = col_date(format = "%Y-%m-%d")))
+```
+
+```{r}
+# theme_set(theme_bw(10))
+library(ggfortify)
+library(latex2exp)
+
+# as.ts(temp_df) -> ts_df
   
 as_tsibble(temp_df, index = date, key = c(member_casual))-> tsibble_df
 tsibble_df
@@ -115,27 +120,44 @@ tsibble_df %>%
 tsibble_df %>% 
   filter(member_casual == "casual") %>% 
   # ggplot(aes(x=date, y= ride_count)) +
-  autoplot(spec.ar(ride_count))
+  spec.ar(ride_count)
+  autoplot()
 ```
 
 ```{r}
-# tsibble_df %>% 
-#   filter(member_casual == "casual") %>%
-#   features(ride_count, features =   "guerrero") 
-
 tsibble_df %>% 
   # filter(member_casual == "casual") %>% 
   # features(ride_count, features = "guerrero") %>%
   # ggplot(aes(x=date, y= ride_count)) +
-  autoplot(log(ride_count) )
+  autoplot(log(ride_count) ) # log !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ```
 
 ```{r}
-tsibble_df %>% 
-  # normalize the variation 
-  autoplot(box_cox(ride_count,.30))+
-  labs(y ="Box-cox transformation ride_count")
+
+
+```
+
+```{r}
+
+# tsibble_df %>% 
+#   # normalize the variation 
+#   autoplot(box_cox(ride_count,.30))+
+#   labs(y ="Box-cox transformation ride_count")
+
+# auto denoting lambda
+lambda <- tsibble_df |>
+  filter(member_casual == "casual") %>% 
+  features(ride_count, features = guerrero) |>
+  pull(lambda_guerrero)
+
+#. box_cox
+tsibble_df |>
+  autoplot(box_cox(ride_count, lambda)) +
+  labs(y = "",
+       title = latex2exp::TeX(paste0(
+         "Transformed ride count with $\\lambda$ = ",
+         round(lambda,2))))
 ```
 
 ```{r}
