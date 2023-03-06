@@ -1,0 +1,158 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+[Forecasting: Principles and Practice](https://otexts.com/fpp3/tsibbles.html)
+
+```{r Setting the environment, message=FALSE, warning=FALSE}
+# library(tidyverse)
+# library(dplyr)
+# library(tidyr)
+# library(janitor)
+# library(lubridate)
+# library(ggplot2)
+# library(plotly)
+# library(scales)
+# library(skimr)
+# library(DT)
+# library(crosstable)
+# library(flextable)
+# library(sf)
+# options(dplyr.summarise.inform = FALSE)
+# options(max.print=100)
+
+#These include several tidyverse packages, and packages to handle time series and forecasting in a “tidy” framework.
+library(fpp3) 
+
+getwd()
+```
+
+```{r}
+
+zip_dir<- paste0(getwd(),"/Divvy_tripdata/") 
+csv_Dir<- paste0(getwd(),"/Divvy_tripdata/csv/") 
+report_caption <- "Jan 2022 - Jan 2023"
+
+# unzipping files
+files <- list.files(path = zip_dir, pattern = "*.zip")
+for (i in files) {
+  unzip(paste0(zip_dir,i), exdir=csv_Dir)
+}
+
+temp <- list.files(path = csv_Dir, pattern = "*.csv")
+myfiles <- lapply(paste0(csv_Dir,temp), read.csv)
+
+raw_df <- dplyr::bind_rows(myfiles)
+
+raw_df$started_at = ymd_hms(raw_df$started_at) 
+raw_df$ended_at = ymd_hms(raw_df$ended_at) 
+
+raw_df[,"trip_duration"] <- as.numeric(as.duration(raw_df$ended_at - raw_df$started_at), "minutes")
+
+trip_df <- raw_df %>% 
+  filter(rideable_type != "docked_bike" & !is.na(end_lat)) %>% 
+  filter(trip_duration > 1 &
+           trip_duration < 1499 ) 
+
+df <- as_tibble(trip_df) 
+
+df[, "weekday"] <- wday(df$started_at, label = TRUE)
+
+```
+
+```{r}
+# theme_set(theme_bw(10))
+library(ggfortify)
+
+df %>% 
+  filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year  
+  # filter(member_casual == "casual") %>% 
+  # group_by( date = as.POSIXct(date(started_at), origin = "1970-01-01")) %>% 
+  group_by( date = date(started_at ), member_casual) %>%
+  summarise(ride_count = n()) -> temp_df
+  
+as.ts(temp_df) -> ts_df
+  
+as_tsibble(temp_df, index = date, key = c(member_casual))-> tsibble_df
+tsibble_df
+```
+
+```{r}
+# ACF computes an estimate of the autocorrelation function of a (possibly multivariate) tsibble.
+ACF(tsibble_df, ride_count, lag_max = 30) 
+```
+
+```{r}
+# observing very strong autocorrelation with lag multiples of 7
+autoplot(ACF(tsibble_df, ride_count, lag_max = 30))
+
+```
+
+```{r}
+tsibble_df %>% 
+  filter(member_casual == "member") %>% 
+  stl(tsibble_df, s.window = 'periodic') %>% 
+  autoplot( ts.colour = 'blue')
+
+```
+
+```{r}
+tsibble_df %>% 
+  filter(member_casual == "casual") %>% 
+  stl( s.window = 'periodic') %>% 
+  autoplot( ts.colour = 'red')
+```
+
+```{r}
+tsibble_df %>% 
+  filter(member_casual == "casual") %>% 
+  gg_lag(ride_count, geom = "point", size=0.5)
+
+```
+
+```{r}
+tsibble_df %>% 
+  filter(member_casual == "casual") %>% 
+  # ggplot(aes(x=date, y= ride_count)) +
+  autoplot(spec.ar(ride_count))
+```
+
+```{r}
+# tsibble_df %>% 
+#   filter(member_casual == "casual") %>%
+#   features(ride_count, features =   "guerrero") 
+
+tsibble_df %>% 
+  # filter(member_casual == "casual") %>% 
+  # features(ride_count, features = "guerrero") %>%
+  # ggplot(aes(x=date, y= ride_count)) +
+  autoplot(log(ride_count) )
+
+```
+
+```{r}
+tsibble_df %>% 
+  # normalize the variation 
+  autoplot(box_cox(ride_count,.30))+
+  labs(y ="Box-cox transformation ride_count")
+```
+
+```{r}
+dcmp <- tsibble_df |>
+  filter(member_casual == "member") %>% 
+  model(stl = STL( ride_count)) # log !!!!!
+# components(dcmp)
+
+components(dcmp) |>
+  as_tsibble() |>
+  autoplot(ride_count, colour="gray") +
+  geom_line(aes(y=trend ), colour = "#D55E00") +
+  labs( y = "Ride_count",
+    title = "Rides"
+  )
+```
+
+```{r}
+components(dcmp) |> autoplot()
+```
