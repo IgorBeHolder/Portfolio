@@ -124,6 +124,7 @@ library(flextable)
 library(sf)
 options(dplyr.summarise.inform = FALSE)
 options(max.print=100)
+# options(ggplot2.discrete.colour= c("#FFDB6D", "#00AFBB"))
 ```
 
 Take a mention on the current working folder in output of `getwd()` and if redefine it if needed:
@@ -303,11 +304,11 @@ raw_df %>%
   nrow()
 ```
 
-A lot of data affected. We might manage to restore some observations stations names by geo data if it possible. This will potentially lead us to more comprehensive reports with geo data.\
+A lot of data affected. We might manage to restore some observations station names by geo data if it possible. This will potentially lead us to more comprehensive reports with geo data.\
 
 ### Data issues
 
-Most of the lost of stations names fell on electric bikes:
+Most of the lost of station names fell on electric bikes:
 
 ```{r Missing stations name}
 raw_df %>% 
@@ -499,7 +500,7 @@ stations_df <-
 
 ```
 
-#### Restoring stations names
+#### Restoring station names
 
 ##### Restoring `end_station_name` and `end_station_id`.
 
@@ -969,10 +970,11 @@ df %>%
 
 Insights:
 
-|                                                                                                                                    |
-|------------------------------------------------------------------------------------------------------------------------------------|
++------------------------------------------------------------------------------------------------------------------------------------+
 | The variation of trip duration among **members** is much lower. This means that they follow some **patterns** throughout the year. |
++------------------------------------------------------------------------------------------------------------------------------------+
 | However average trip duration is higher among **casual** riders. They are **not time constrained** as members.                     |
++------------------------------------------------------------------------------------------------------------------------------------+
 
 #### Number of trips by duration
 
@@ -1062,20 +1064,14 @@ Members ride more often but their trips are shorter. They are more time constrai
 ### Why would casual riders buy Cyclistic annual memberships?
 
 So, how can we steer casual riders to became a Cyclistics member?\
-We should accent our offerings on the preferences that have been figured out in the report.
+We should accent our offerings on the preferences that have been figured out in the report.\
+Casual riders are not avid bikers. They are ready to pay more for e-bike rent.\
+We should outline that our proposition is more profitable than rent a e-bike from time to time.
 
-Our top recommendations:
-
-1.  Work out a new e-bike membership which includes 30-60 minutes of **e-bike rides on weekends**.\
-    The price should be higher than ordinary membership, say 200 \$ but\
-    Additional research should be conducted about specific pricing parameters\*
-2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
-3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
-
-Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accent on classic bike usage).
-
-\*Annual weekend membership program - any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included for 200\$ a year. \
-April - September - 48 days means only 4\$ on e-bike a day.
+For example, Annual weekend membership program -\
+any number of rides totally up to 60 min on Saturdays and 60 min on Sundays included\
+for 200\$ a year. (from April till September - 48 weekend days means only 4\$ on e-bike a day).\
+If we take into account full year - 200\$ / 104 d means only 2\$ per weekend day on e-bike.
 
 ### How can Cyclistic use digital media to influence casual riders to become members?
 
@@ -1087,14 +1083,18 @@ April - September - 48 days means only 4\$ on e-bike a day.
 
 ## 6. ACT
 
-1.  Casual riders are not avid bikers. The are ready to pay more for e-bike rent.\
-    We have to make them an offer from which they are unlikely to refuse.
+1.  Our top recommendations:
 
-2.  We at Cyclistics need to develop a marketing campaign to promote e-bikes rent among members.
+    1.  Work out a new e-bike membership which includes 30-60 minutes of **e-bike rides on weekends**.\
+        The price should be higher than ordinary membership, say 200 \$ but\
+        Additional research should be conducted about specific pricing parameters.\
+        Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accented on classic bike usage).
+    2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
+    3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
+    4.  Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments. Conduct a survey about potential locations of dock-stations.
+    5.  Explore Chicago 2022 weather (temperature, precipitation) data and how it affected riders trips.
 
-3.  Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments. Conduct a survey about potential locations of dock-stations.
-
-4.  Explore Chicago 2022 weather (temperature, precipitation) data and how it affected riders trips.\
+    \
 
 ## Additional research
 
