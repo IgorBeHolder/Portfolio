@@ -124,7 +124,6 @@ library(flextable)
 library(sf)
 options(dplyr.summarise.inform = FALSE)
 options(max.print=100)
-# options(ggplot2.discrete.colour= c("#FFDB6D", "#00AFBB"))
 ```
 
 Take a mention on the current working folder in output of `getwd()` and if redefine it if needed:
@@ -184,7 +183,7 @@ Let's go further.
 
 Let's check it out:
 
-```{r cols consistency}
+```{r columns consistency}
 janitor::compare_df_cols_same(myfiles)
 ```
 
@@ -637,6 +636,9 @@ filter(df, trip_duration < trip_limit) -> df
 #### Average duration of one trip throughout a year
 
 ```{r Average duration of one trip, warning=TRUE}
+options(ggplot2.discrete.colour= c("#01ace8", "#e8c801",  "#d962ed"))
+options(ggplot2.discrete.fill= c("#01ace8", "#e8c801",  "#d962ed"))
+
 df %>% 
   group_by(member_casual, weekday) %>% 
   summarise(ride_mean = round(mean(trip_duration),1))  %>% 
@@ -697,6 +699,9 @@ raw_df  %>%
 ```
 
 ```{r maximum ride duration}
+options(ggplot2.discrete.colour= c("#e8c801","#01ace8",   "#d962ed"))
+options(ggplot2.discrete.fill= c("#e8c801","#01ace8",   "#d962ed"))
+
 raw_df  %>% 
   filter(rideable_type != "docked_bike") %>%
   filter(start_station_name !="" & end_station_name != "" &
@@ -744,7 +749,7 @@ Insights:
 ```{r Number of trips throughout a year}
 df %>% 
   filter(started_at < ymd("2023-01-01")) %>% # limit to a calendar year  
-  group_by(member_casual, rideable_type) %>% 
+  group_by(rideable_type, member_casual) %>% 
   summarise(ride_count = n()) %>%
   
   ggplot() + 
@@ -794,6 +799,9 @@ df %>%
 #### The mode of day of week throughout a year
 
 ```{r overall mode of day of week}
+options(ggplot2.discrete.colour= c("#01ace8", "#e8c801",  "#d962ed"))
+options(ggplot2.discrete.fill= c("#01ace8", "#e8c801",  "#d962ed"))
+
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
