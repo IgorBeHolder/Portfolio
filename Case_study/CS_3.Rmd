@@ -1090,8 +1090,8 @@ If we take into account full year - 200\$ / 104 d means only 2\$ per weekend day
         Additional research should be conducted about specific pricing parameters.\
         Let's don't forget about our current customers. New proposal shouldn't contradict their current membership (accented on classic bike usage).
     2.  Customers may consider to buy personal e-bikes, but we should launch **an awareness campaign** about the benefits of e-bike sharing (charging, service, does not take up space in the apartment, not have to worry a single second about a bike being stolen, etc.)
-    3.  Investigate most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
-    4.  Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments. Conduct a survey about potential locations of dock-stations.
+    3.  Explore most popular casual riders routes in Chicago and inform potential customers about future locations of dock stations. Conduct a survey among potential customers where to locate stations.
+    4.  Invest time and efforts into additional exploration of potential customers and their needs, polishing special proposals among customers segments.
     5.  Explore Chicago 2022 weather (temperature, precipitation) data and how it affected riders trips.
 
     \
