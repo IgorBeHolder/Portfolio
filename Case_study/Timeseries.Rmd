@@ -178,3 +178,11 @@ components(dcmp) |>
 ```{r}
 components(dcmp) |> autoplot()
 ```
+
+```{r}
+options(ggplot2.discrete.colour= c("#F3E63C", "#62ADCB"))
+
+tsibble_df %>% 
+  ggplot() +
+  geom_point(aes(x= date, y=ride_count, color =member_casual) )
+```
