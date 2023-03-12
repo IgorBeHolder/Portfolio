@@ -14,7 +14,7 @@ This repository is for sharing projects that I found interesting. Don't hesitate
 | One-armed bandit slot machine simulator                                                   | Python   | [Google Colab Notebook](https://colab.research.google.com/drive/1XGkMiF_dWvoNognW9dxFVx-6rfXnr1Y6?usp=sharing) | Monte Carlo method in action. Plotly visuals |
 | "Churn prediction". [MIPT](https://mipt.ru/english/edu/phystechschools/psami) competition | Python   | [Kaggle](https://www.kaggle.com/igorsorochan/competitions)                                                     | 24 out of 3095 students (top 0.7%) |
 |Videogames dataset. Statistical tests| Python| [Google Colab](https://drive.google.com/file/d/1ehe3XbOvpq1d9tNQI34P9WTMQ9yhlz5h/view?usp=sharing) | Student  T-test for the mean of ONE group of scores, Shapiro test, plotly express viz.|
-|Statistics|Python|[Jupiter notebook](Notebooks/stats_Power_Min_sample_size_HW.ipynb)|Monte Carlo in modeling of hypothesis testing|
+|Statistics|Python|[Jupiter notebook](Notebooks/stats_Power_Min_sample_size_HW.ipynb)|Monte Carlo in modeling of hypothesis testing. Power analysis. Min sample size. Evaluating A/B tests|
 
 I'm interested in hightech, sports, photography.  
 There are moments when mental focus is difficult  and then mountain biking comes to the rescue.
