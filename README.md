@@ -10,6 +10,8 @@
 This repository is for sharing projects that I've found interesting.  
 Don't hesitate to ask.
 
+I certify that all code is not plagiarized and is made only by me.
+
 | Project  | Language | Output  | Description  |
 |:---|:---|:----|:-----|
 | Google Data Analyst professional certificate program. <br />  Capstone project | R        | [HTML document](/Case_study/CS_3.html) <br /> [GitHub document](/Case_study/CS_3.md) <br /> [Slides](https://docs.google.com/presentation/d/1SfW3tptsrS7h582H443bq5B76kD1XkVBgsjMKCB3R9g/edit?usp=sharing) <br /> [Tableau](https://public.tableau.com/views/Google_DA_Certificate/Dashboard2?:language=en-US&:display_count=n&:origin=viz_share_link)       | Project have done in **R-studio** and knitted to github document. <br /> Currently R notebooks in GitHub has a limited performance. <br /> Best practice is to save html document locally  and then open it with any browser. <br /> HTML output includes interactive plotly graphics and has a better presentation. |
