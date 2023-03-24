@@ -22,5 +22,6 @@ I certify that all code is not plagiarized and is made only by me.
 |Simple spam filter|Python| [Jupiter notebook](Notebooks/Spam_filter.ipynb) |Tokenization.TF-IDF vectors. LR. Confusion matrix|
 
 I'm interested in hightech, sports, photography.  
-There are moments when mental focus is difficult  and then mountain biking comes to the rescue.
-Look up my [strava profile](https://www.strava.com/athletes/2754950).
+There are moments when mental focus is difficult  and then mountain biking comes to the rescue.  
+
+Check out my [strava profile](https://www.strava.com/athletes/2754950).
