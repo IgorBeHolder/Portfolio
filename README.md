@@ -20,6 +20,7 @@ I certify that all code is not plagiarized and is made only by me.
 |Videogames dataset. Statistical tests| Python| [Google Colab](https://drive.google.com/file/d/1ehe3XbOvpq1d9tNQI34P9WTMQ9yhlz5h/view?usp=sharing) | Student  T-test for the mean of ONE group of scores, Shapiro test, plotly express viz.|
 |Statistics|Python|[Jupiter notebook](Notebooks/stats_Power_Min_sample_size_HW.ipynb)|Monte Carlo in modeling of hypothesis testing. Power analysis. Min sample size. Evaluating A/B tests|
 |Simple spam filter|Python| [Jupiter notebook](Notebooks/Spam_filter.ipynb) |Tokenization.TF-IDF vectors. LR. Confusion matrix|
+|Eventually I came up with my own Titanic)|Python|[Kaggle notebook](https://www.kaggle.com/code/igorsorochan/titanic-smart-filling-with-comprehensive-comments)| EDA and smart filling missing values on famous Kaggle dataset|
 
 I'm interested in hightech, sports, photography.  
 There are moments when mental focus is difficult  and then mountain biking comes to the rescue.  
