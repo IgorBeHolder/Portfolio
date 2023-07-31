@@ -10,7 +10,6 @@
 This repository is for sharing projects that I've found interesting.  
 Don't hesitate to ask.
 
-I certify that all code is not plagiarized and is made only by me.
 
 | Project  | Language | Output  | Description  |
 |:---|:---|:----|:-----|
