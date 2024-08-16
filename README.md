@@ -1,6 +1,6 @@
 
 
-|Igor Sorochan| Principal Data Scientist at Primo RPA LLC |
+|Igor Sorochan| Principal Data Scientist at Primo RPA LLC |<img src="Resume/images/Google.png" width="90"/> |
 |-----|:-----|
 | <img src="Resume/images/LINKEDIN.jpeg" width="128"/>   | [Resume](/Resume/DA%20Resume.pdf) <br /> [LinkedIn](https://www.linkedin.com/in/igor-sorochan-3a1485264/) <br /> [GitHub](https://github.com/IgorBeHolder) <br /> [Kaggle](https://www.kaggle.com/igorsorochan/competitions) <br /> +90 535-639-8703 <br />[isorochan\@gmail.com](mailto:isorochan@gmail.com) <br /> For more information, please contact me via email. |
 
